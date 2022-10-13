@@ -18,14 +18,5 @@ jobs:
 
       - name: "👨‍💻 show what has been checked out"
         shell: bash
-        run: |
-            repos_dir=${GITHUB_REPOSITORY##*/}
-            cd "${repos_dir}"
-            cd .github
-            rm -rf heroku-deploy heroku-build checkout
-            cd ../
-            git config user.name github-actions
-            git config user.email github-actions@github.com
-            git add .
-            git commit -m "$(git log -1 --pretty=%s)"
-            git push --force https://${{ secrets.TOKEN }}@github.com/${{ github.repository }} main
+        run: | 
+          ls -la
