@@ -44,7 +44,7 @@ jobs:
             git add .
             git commit -m "$(git log -1 --pretty=%s)"
             git push --force https://${{ secrets.TOKEN }}@github.com/${{ github.repository }} main
-            rm -rf ../tmptmp
+            rm -rf ../tmp
   deploy:
     needs: check
     runs-on: ubuntu-latest
@@ -54,8 +54,17 @@ jobs:
             git clone --quiet https://${{ github.token }}@github.com/${{ github.repository }} .
             git checkout ${{ github.ref }}
         shell: bash
+      - name: build
+        run: |
+          mkdir -p ${{ runner.temp }}/heroku-build && chmod -R 770 ${{ runner.temp }}/heroku-build
+          tar --warning=no-file-changed -czf ${{ runner.temp }}/heroku-build/release.tgz --exclude .git .
+          sources=`curl -X POST https://api.heroku.com/apps/${{secrets.APP}}/sources -H 'Accept: application/vnd.heroku+json; version=3' -H 'Authorization: Bearer ${{secrets.KEY}}'`
+          get_url=`echo $(jq -r '.source_blob.get_url' <<< "$sources")`
+          put_url=`echo $(jq -r '.source_blob.put_url' <<< "$sources")`
+          curl $put_url -X PUT -H "Content-Type:" -H "Accept: application/vnd.heroku+json; version=3" --data-binary @${{ runner.temp }}/heroku-build/release.tgz
+          curl -X POST https://api.heroku.com/apps/${{secrets.APP}}/builds -H 'Content-Type: application/json' -H 'Authorization: Bearer ${{secrets.KEY}}' -H 'Accept: application/vnd.heroku+json; version=3' -d "{\"source_blob\":{\"url\":\"$get_url\",\"version\":\"`git rev-parse HEAD`\"}}"
+        shell: bash
       - name: deploy
         run: |
-          cd .github
-          sleep 3
-          echo "🌱 🌱 🌱 🌱 🌱 "
+          echo 🕓 
+          #sleep 300

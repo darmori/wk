@@ -1,0 +1,69 @@
+name: keepawake
+
+on:
+  #workflow_run:
+    #workflows: ["deploy"]
+    #branches: [main]
+    #types:
+      #- completed
+  schedule:
+    - cron: "0 */5 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  keep-awake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        run: |
+          BRANCH="${GITHUB_REF/#refs\/heads\//}"
+          git clone --filter=blob:none --no-checkout --depth 1 --sparse https://${{ github.token }}@github.com/${{ github.repository }} .
+          git sparse-checkout init --cone --sparse-index
+          git -c protocol.version=2 fetch --no-tags --prune --progress --depth=1 origin +${GITHUB_SHA}:refs/remotes/origin/${BRANCH}
+          git checkout --progress --force -B $BRANCH refs/remotes/origin/$BRANCH
+      
+      - name: keep-awake
+        run: |  
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          rm -rf *.txt
+          TZ='Asia/Shanghai'; export TZ
+          
+          if [ "$(curl -sL -w '%{http_code}' https://dmv.herokuapp.com/ -o /dev/null)" = "200" ]; then
+            echo ------------success excute curl dmv!!!!!!!------------
+          else
+            echo "DMV Fail!!!"
+          fi
+          
+          if [ "$(curl -sL -w '%{http_code}' https://okray-losrose.cloud.okteto.net/ -o /dev/null)" = "200" ]; then
+            echo ------------success excute curl okray-losrose!!!!!!!------------
+          else
+            echo "okray-loserse Fail!!!"
+          fi
+          
+          if [ "$(curl -sL -w '%{http_code}' https://okray-anditsaid.cloud.okteto.net/ -o /dev/null)" = "200" ]; then
+            echo ------------success excute curl okray-anditsaid!!!!!!!------------
+          else
+            echo "okray-anditsaid Fail!!!"
+          fi
+          
+          if [ "$(curl -sL -w '%{http_code}' https://koray-markmyer.koyeb.app/ -o /dev/null)" = "200" ]; then
+            echo ------------success excute curl koray-markmyer!!!!!!!------------
+          else
+            echo "koray-markmyer Fail!!!"
+          fi
+          
+          if [ "$(curl -sL -w '%{http_code}' https://koray-markmyer.koyeb.app/ -o /dev/null)" = "200" ]; then
+            echo ------------success excute curl koray-markmyer!!!!!!!------------
+          else
+            echo "koray-markmyer Fail!!!"
+          fi
+          
+          
+          DATE=`date +%Y%m%d%H%M`
+          touch $DATE.txt
+          git add .
+          git commit --allow-empty -m "$(git log -1 --pretty=%s)"
+          git push --force https://${{ secrets.TOKEN }}@github.com/${{ github.repository }} main
+
