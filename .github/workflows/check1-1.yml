@@ -19,5 +19,4 @@ jobs:
       - name: "👨‍💻 show what has been checked out"
         shell: bash
         run: | 
-          cd .
-          ls -la
+          cd ../
