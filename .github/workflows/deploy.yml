@@ -19,7 +19,7 @@ jobs:
     outputs:
       building_id: ${{ steps.push.outputs.building_id }}
     steps:
-      - name: Wait for check workflows_run to succeed
+      - name: Wait
         if: ${{ github.event.workflow_run.conclusion != 'success' }}
         run: exit 1
       - name: Clone
