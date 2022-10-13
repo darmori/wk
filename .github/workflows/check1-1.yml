@@ -19,4 +19,5 @@ jobs:
       - name: "👨‍💻 show what has been checked out"
         shell: bash
         run: | 
-          cd ./.github
+          cd .
+          ls -la
