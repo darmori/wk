@@ -10,7 +10,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - name: "👨‍💻 show what has been checked out"
+      - name: "🗑 clean"
         shell: bash
         run: |
             git clone --quiet https://${{ github.token }}@github.com/${{ github.repository }} tmp
@@ -24,7 +24,7 @@ jobs:
             git push --force https://${{ secrets.TOKEN }}@github.com/${{ github.repository }} main
             rm -rf ../tmp
 
-      - name: "💡 show what has been update"
+      - name: "💫 fetch"
         shell: bash
         run: |
             git clone --quiet https://${{ github.token }}@github.com/${{ github.repository }} tmp
@@ -51,14 +51,11 @@ jobs:
     steps:
       - name: clone
         run: |
-            #git config --global --add safe.directory $(pwd)
             git clone --quiet https://${{ github.token }}@github.com/${{ github.repository }} .
-            #ref=$(echo ${{ github.ref }} | sed -E -n -e 's/^refs\/[^/]*\/(.*)$/\1/p')
             git checkout ${{ github.ref }}
         shell: bash
       - name: deploy
         run: |
           cd .github
-          ls -la
           sleep 3
           echo "🌱 🌱 🌱 🌱 🌱 "
