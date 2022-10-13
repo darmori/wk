@@ -70,12 +70,14 @@ jobs:
         #uses: ./.github/checkout
           
         run: | 
-          cd .github/heroku-build
+          cd .github
           ls -la 
           cd ../
           ls -la
           cd .gitub/checkout
           ls -la
+          cd ../
+          cd ../
       - name: checkout
         #id: checkout
         uses: ./.github/checkout
