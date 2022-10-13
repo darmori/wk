@@ -37,9 +37,9 @@ jobs:
           #api-key: "${{secrets.KEY}}"
           
         run: | 
-          cd ./.github/
+          cd .github
           ls -la 
-          cd ./.github/checkout
+          cd .github/checkout
           ls -la
         
       - name: Push
@@ -68,12 +68,15 @@ jobs:
         #uses: ./.github/checkout
           
         run: | 
-          cd ./.github/heroku-build
+          cd .github/heroku-build
           ls -la 
           cd ../
           ls -la
-          cd ./.gitub/checkout
+          cd .gitub/checkout
           ls -la
+      - name: checkout
+        #id: checkout
+        uses: ./.github/checkout
           
         
       
