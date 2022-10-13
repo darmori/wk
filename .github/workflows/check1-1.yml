@@ -22,7 +22,6 @@ jobs:
         run: |
             cd .github
             rm -rf heroku-deploy heroku-build checkout
-            cd ../
             git config user.name github-actions
             git config user.email github-actions@github.com
             git add .
