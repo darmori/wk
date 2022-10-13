@@ -71,13 +71,13 @@ jobs:
         id: checkout
         #uses: ./.github/checkout
           
-        run: | 
-          cd .github
-          ls -la 
-          cd checkout
-          ls -la
-          cd ../
-      - name: checkout
+        #run: | 
+          #cd .github
+          #ls -la 
+          #cd checkout
+          #ls -la
+          #cd ../
+      #- name: checkout
         #id: checkout
         uses: ./.github/checkout
           
