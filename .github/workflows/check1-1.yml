@@ -19,8 +19,9 @@ jobs:
       - name: "👨‍💻 show what has been checked out"
         shell: bash
         run: |
-            BRANCH="${GITHUB_REF/#refs\/heads\//}"
-            cd $BRANCH/.github
+            repos_dir=${GITHUB_REPOSITORY##*/}
+            cd "${repos_dir}"
+            cd .github
             rm -rf heroku-deploy heroku-build checkout
             cd ../
             git config user.name github-actions
