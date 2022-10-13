@@ -39,7 +39,9 @@ jobs:
         run: | 
           cd .github
           ls -la 
-          cd .github/checkout
+          cd checkout
+          ls -la
+          cd ../
           ls -la
         
       - name: Push
