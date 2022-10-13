@@ -42,7 +42,9 @@ jobs:
           cd checkout
           ls -la
           cd ../
-          ls -la
+      - name: Checkout
+        uses: ./.github/checkout
+          
         
       - name: Push
         id: push
@@ -72,11 +74,8 @@ jobs:
         run: | 
           cd .github
           ls -la 
-          cd ../
+          cd checkout
           ls -la
-          cd .gitub/checkout
-          ls -la
-          cd ../
           cd ../
       - name: checkout
         #id: checkout
