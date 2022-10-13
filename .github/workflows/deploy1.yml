@@ -50,7 +50,6 @@ jobs:
         id: push
         if: ${{ success() && steps.build.conclusion == 'success' }}
         run: |
-          #sleep 300
           echo "::set-output name=building_id::$BUILDING_ID"
   
   deploying: 
@@ -85,8 +84,7 @@ jobs:
       
       - name: build
         run: |
-          #sleep 100
-          echo 👋👏👏👏 BUILD SUCCESS 👋👏👏👏! ${{ needs.building.outputs.building_id }}
+          ${{ needs.building.outputs.building_id }}
       
       #- name: deploy
         #if:  ${{ success() }}
