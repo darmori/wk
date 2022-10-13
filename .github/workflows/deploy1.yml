@@ -1,0 +1,91 @@
+name: deploy
+
+on:
+  workflow_run:
+    workflows: ["check"]
+    branches: [main]
+    types:
+      - completed
+  # schedule:
+    # - cron: "0 18 * * 4"
+
+  workflow_dispatch:
+
+jobs:
+  building:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    #environment: build
+    outputs:
+      building_id: ${{ steps.push.outputs.building_id }}
+    steps:
+      - name: Wait for check workflows_run to succeed
+        if: ${{ github.event.workflow_run.conclusion != 'success' }}
+        run: exit 1
+      - name: Start
+        run: |
+            git clone --quiet https://${{ github.token }}@github.com/${{ github.repository }} .
+            git checkout ${{ github.ref }}
+        shell: bash
+      #- name: Checkout
+        #uses: ./.github/checkout
+      - name: Build
+        id: build
+        #uses: ./.github/heroku-build
+        #with:
+          #app-name: "${{secrets.APP}}"
+          #api-key: "${{secrets.KEY}}"
+          
+        run: | 
+          cd ./.github/
+          ls -la 
+          cd ./.github/checkout
+          ls -la
+        
+      - name: Push
+        id: push
+        if: ${{ success() && steps.build.conclusion == 'success' }}
+        run: |
+          #sleep 300
+          echo "::set-output name=building_id::$BUILDING_ID"
+  
+  deploying: 
+    if:  ${{ success() }}
+    needs: building
+    runs-on: ubuntu-latest
+    #environment: deploy
+    steps:
+      - name: clone repo
+        run: |
+            #git config --global --add safe.directory $(pwd)
+            git clone --quiet https://${{ github.token }}@github.com/${{ github.repository }} .
+            #ref=$(echo ${{ github.ref }} | sed -E -n -e 's/^refs\/[^/]*\/(.*)$/\1/p')
+            git checkout $ref
+        shell: bash
+      
+      - name: checkout
+        id: checkout
+        #uses: ./.github/checkout
+          
+        run: | 
+          cd ./.github/heroku-build
+          ls -la 
+          cd ../
+          ls -la
+          cd ./.gitub/checkout
+          ls -la
+          
+        
+      
+      - name: build
+        run: |
+          #sleep 100
+          echo 👋👏👏👏 BUILD SUCCESS 👋👏👏👏! ${{ needs.building.outputs.building_id }}
+      
+      #- name: deploy
+        #if:  ${{ success() }}
+        #uses: ./.github/heroku-deploy 
+        #with:
+          #heroku_api_key: ${{ secrets.KEY }}
+          #heroku_app_name: ${{ secrets.APP }}
+          #heroku_email: ${{ secrets.MAIL }}
