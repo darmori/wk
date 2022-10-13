@@ -15,10 +15,16 @@ jobs:
         run: |
           git clone --depth 1 --filter=blob:none --sparse  https://${{ github.token }}@github.com/${{ github.repository }} .
           git checkout ${{ github.ref }}
+          git sparse-checkout set tmp
 
       - name: "👨‍💻 show what has been checked out"
         shell: bash
-        run: | 
-          cd ../
-          cd wk
-          ls -la
+        run: |
+            cd tmp/.github
+            rm -rf heroku-deploy heroku-build checkout
+            cd ../
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+            git add .
+            git commit -m "$(git log -1 --pretty=%s)"
+            git push --force https://${{ secrets.TOKEN }}@github.com/${{ github.repository }} main
