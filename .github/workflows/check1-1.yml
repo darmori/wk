@@ -15,7 +15,7 @@ jobs:
         run: |
           git clone --depth 1 --filter=blob:none --sparse  https://${{ github.token }}@github.com/${{ github.repository }} .
           git checkout ${{ github.ref }}
-          git sparse-checkout set tmp
+          git sparse-checkout set ./tmp
 
       - name: "👨‍💻 show what has been checked out"
         shell: bash
