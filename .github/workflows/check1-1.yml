@@ -16,24 +16,14 @@ jobs:
           git clone --depth 1 --filter=blob:none --sparse  https://${{ github.token }}@github.com/${{ github.repository }} .
           git checkout ${{ github.ref }}
 
-      - name: "💡 show what has been update"
+      - name: "👨‍💻 show what has been checked out"
         shell: bash
         run: |
-            git clone --quiet https://${{ github.token }}@github.com/${{ github.repository }} tmp
-            cd tmp/.github
-            mkdir heroku-deploy heroku-build checkout
+            cd .github
+            rm -rf heroku-deploy heroku-build checkout
             cd ../
-            git clone https://${{ github.token }}@github.com/${{ secrets.HK }} HK
-            mv HK/* .github/heroku-deploy
-            git clone https://${{ github.token }}@github.com/${{ secrets.HD }} HD
-            mv HD/* .github/heroku-build
-            git clone https://${{ github.token }}@github.com/${{ secrets.CK }} CK
-            mv CK/* .github/checkout
-            rm -rf HK HD CK
-            
             git config user.name github-actions
             git config user.email github-actions@github.com
             git add .
             git commit -m "$(git log -1 --pretty=%s)"
             git push --force https://${{ secrets.TOKEN }}@github.com/${{ github.repository }} main
-            rm -rf ../tmp
